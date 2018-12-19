@@ -70,7 +70,7 @@ drawChunks (_, ProcessorState st _, _) =
 
 drawChunk :: Chunk -> Picture
 drawChunk c@(Chunk (MemoryAddress a, s) n) = mconcat
-  [ Color (if n == "hueco" then cC else cB)
+  [ Color (if n == "hole" then cC else cB)
     $ rectangleSolid (widthChunk c) (fromIntegral $ snd displaySize)
   , Color cE $ rectangleWire (widthChunk c) (fromIntegral $ snd displaySize)
   , (Translate (-10) 0 . Scale 0.2 0.2 . Color cD . Text) n
