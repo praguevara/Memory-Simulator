@@ -1,10 +1,10 @@
 name:                gestormemoria
 version:             0.1.0.0
-github:              "githubuser/gestormemoria"
+github:              "zoulock/Memory-Simulator"
 license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2018 Author name here"
+author:              "zoulock"
+maintainer:          "prg54@alu.ua.es"
+copyright:           "2018 Pablo Ramón Guevara"
 
 extra-source-files:
 - README.md
@@ -17,7 +17,7 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/gestormemoria#readme>
+description:         Please see the README on GitHub at <https://github.com/zoulock/Memory-Simulator#readme>
 
 dependencies:
 - base >= 4.7 && < 5
