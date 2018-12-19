@@ -33,9 +33,8 @@ steps :: SimState
   -> Fit
   -> (Fit -> SimState -> Writer [Action] SimState)
   -> ([SimState], [Log])
-steps s f c = do
-  a <- runWriter $ take 10 <$> iterateM (step f c) s
-  return (a)
+steps s f c = runWriter $ take 10 <$> iterateM (step f c) s
+
 
 takeWhileOneMore :: (a -> Bool) -> [a] -> [a]
 takeWhileOneMore p = foldr (\x ys -> if p x then x:ys else [x]) []
