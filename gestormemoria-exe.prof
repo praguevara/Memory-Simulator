@@ -1,0 +1,188 @@
+	Wed Dec 19 00:21 2018 Time and Allocation Profiling Report  (Final)
+
+	   gestormemoria-exe +RTS -N -p -h -RTS
+
+	total time  =        0.30 secs   (1093 ticks @ 1000 us, 8 processors)
+	total alloc = 3,886,877,864 bytes  (excludes profiling overheads)
+
+COST CENTRE             MODULE              SRC                                      %time %alloc
+
+main                    Main                app/Main.hs:(15,1)-(31,43)                27.9   21.4
+writeState              Parser              src/Parser.hs:(17,1)-(24,8)               22.0   27.9
+show                    Parser              src/Parser.hs:41:3-78                     16.0   22.5
+iterateM                Control.Monad.Extra Control/Monad/Extra.hs:(221,1)-(223,31)    8.1    6.4
+issue                   Algorithm           src/Algorithm.hs:(76,1)-(79,49)            3.8    4.0
+gaps                    Algorithm           src/Algorithm.hs:(21,1)-(27,70)            3.2    2.9
+step                    Algorithm           src/Algorithm.hs:(64,1)-(69,30)            2.8    3.4
+gaps.\                  Algorithm           src/Algorithm.hs:24:11-79                  2.5    1.4
+removeFinishedProcesses Algorithm           src/Algorithm.hs:(120,1)-(125,31)          1.6    2.5
+MAIN                    MAIN                <built-in>                                 1.2    0.0
+span                    Data.SortedList     Data/SortedList.hs:(378,1)-(380,36)        1.0    1.4
+insertFromQueue         Algorithm           src/Algorithm.hs:(82,1)-(85,15)            1.0    0.3
+partition               Data.SortedList     Data/SortedList.hs:(241,1)-(243,36)        0.7    1.4
+
+
+                                                                                                                               individual      inherited
+COST CENTRE                               MODULE                  SRC                                     no.       entries  %time %alloc   %time %alloc
+
+MAIN                                      MAIN                    <built-in>                              14687          0    1.2    0.0   100.0  100.0
+ CAF                                      GHC.Conc.Signal         <entire-module>                         14797          0    0.0    0.0     0.0    0.0
+ CAF                                      GHC.IO.Encoding         <entire-module>                         14779          0    0.0    0.0     0.0    0.0
+ CAF                                      GHC.IO.Encoding.Iconv   <entire-module>                         14777          0    0.0    0.0     0.0    0.0
+ CAF                                      GHC.IO.Exception        <entire-module>                         14771          0    0.0    0.0     0.0    0.0
+ CAF                                      GHC.IO.Handle.FD        <entire-module>                         14769          0    0.0    0.0     0.0    0.0
+ CAF                                      GHC.IO.Handle.Internals <entire-module>                         14768          0    0.0    0.0     0.0    0.0
+ CAF                                      GHC.IO.Handle.Text      <entire-module>                         14767          0    0.0    0.0     0.0    0.0
+ CAF                                      GHC.TopHandler          <entire-module>                         14745          0    0.0    0.0     0.0    0.0
+ CAF                                      System.Posix.Internals  <entire-module>                         14734          0    0.0    0.0     0.0    0.0
+ CAF                                      Text.Read.Lex           <entire-module>                         14730          0    0.0    0.0     0.0    0.0
+ CAF                                      GHC.Event.Thread        <entire-module>                         14721          0    0.0    0.0     0.0    0.0
+ CAF                                      GHC.IO.FD               <entire-module>                         14710          0    0.0    0.0     0.0    0.0
+ CAF                                      GHC.Event.Manager       <entire-module>                         14705          0    0.0    0.0     0.0    0.0
+ CAF                                      GHC.Event.Poll          <entire-module>                         14703          0    0.0    0.0     0.0    0.0
+ CAF:$fOrdMemoryAddress7                  Process                 <no location info>                      29265          0    0.0    0.0     0.0    0.0
+  compare                                 Process                 src/Process.hs:24:19-21                 29478          1    0.0    0.0     0.0    0.0
+ CAF:$fShowChunk2                         Parser                  <no location info>                      29296          0    0.0    0.0     0.0    0.0
+ CAF:availableFits                        Algorithm               src/Algorithm.hs:140:1-13               29331          0    0.0    0.0     0.0    0.0
+  availableFits                           Algorithm               src/Algorithm.hs:(140,1)-(141,75)       29381          1    0.0    0.0     0.0    0.0
+ CAF:availableFits13                      Algorithm               <no location info>                      29325          0    0.0    0.0     0.0    0.0
+ CAF:availableFits5                       Algorithm               <no location info>                      29329          0    0.0    0.0     0.0    0.0
+ CAF:availableFits9                       Algorithm               <no location info>                      29327          0    0.0    0.0     0.0    0.0
+ CAF:end1                                 Process                 <no location info>                      29284          0    0.0    0.0     0.0    0.0
+  end                                     Process                 src/Process.hs:39:1-71                  29470          1    0.0    0.0     0.0    0.0
+ CAF:gapToChunk                           Parser                  src/Parser.hs:38:1-10                   29287          0    0.0    0.0     0.0    0.0
+  gapToChunk                              Parser                  src/Parser.hs:38:1-31                   29437          1    0.0    0.0     0.0    0.0
+ CAF:gapToChunk_x                         Parser                  <no location info>                      29286          0    0.0    0.0     0.0    0.0
+ CAF:initialState                         Process                 src/Process.hs:21:1-12                  29283          0    0.0    0.0     0.0    0.0
+  initialState                            Process                 src/Process.hs:21:1-65                  29401          1    0.0    0.0     0.0    0.0
+ CAF:initialState1                        Process                 <no location info>                      29282          0    0.0    0.0     0.0    0.0
+  initialState                            Process                 src/Process.hs:21:1-65                  29402          0    0.0    0.0     0.0    0.0
+   toSortedList                           Data.SortedList         Data/SortedList.hs:129:1-37             29403          1    0.0    0.0     0.0    0.0
+ CAF:initialState2                        Process                 <no location info>                      29281          0    0.0    0.0     0.0    0.0
+  initialState                            Process                 src/Process.hs:21:1-65                  29430          0    0.0    0.0     0.0    0.0
+   toSortedList                           Data.SortedList         Data/SortedList.hs:129:1-37             29431          1    0.0    0.0     0.0    0.0
+ CAF:lvl10_rfcK                           Main                    <no location info>                      29362          0    0.0    0.0     0.0    0.0
+ CAF:lvl15_rfcS                           Main                    <no location info>                      29366          0    0.0    0.0     0.0    0.0
+ CAF:lvl17_rfcV                           Main                    <no location info>                      29368          0    0.0    0.0     0.0    0.0
+ CAF:lvl1_rfcz                            Main                    <no location info>                      29359          0    0.0    0.0     0.0    0.0
+ CAF:lvl3_rfcB                            Main                    <no location info>                      29360          0    0.0    0.0     0.0    0.0
+ CAF:main1                                Main                    <no location info>                      29372          0    0.0    0.0     0.0    0.0
+  main                                    Main                    app/Main.hs:(15,1)-(31,43)              29374          1    0.0    0.0     0.0    0.0
+ CAF:readCompact_rfcT                     Main                    <no location info>                      29367          0    0.0    0.0     0.0    0.0
+  readCompact                             Main                    app/Main.hs:(51,1)-(58,5)               29383          1    0.0    0.0     0.0    0.0
+ CAF:readFit_rfcQ                         Main                    <no location info>                      29365          0    0.0    0.0     0.0    0.0
+  readFit                                 Main                    app/Main.hs:(43,1)-(48,46)              29379          1    0.0    0.0     0.0    0.0
+ CAF:readPlaySimulation_rfcY              Main                    <no location info>                      29370          0    0.0    0.0     0.0    0.0
+  readPlaySimulation                      Main                    app/Main.hs:(61,1)-(64,31)              29385          1    0.0    0.0     0.0    0.0
+ CAF:readProcess3                         Parser                  <no location info>                      29295          0    0.0    0.0     0.0    0.0
+  readProcess                             Parser                  src/Parser.hs:(9,1)-(11,36)             29416          0    0.0    0.0     0.0    0.0
+ CAF:readProcesses1                       Parser                  <no location info>                      29297          0    0.0    0.0     0.0    0.0
+  readProcesses                           Parser                  src/Parser.hs:14:1-60                   29376          1    0.0    0.0     0.0    0.0
+ CAF:totalMemory                          Algorithm               src/Algorithm.hs:12:1-11                29319          0    0.0    0.0     0.0    0.0
+  totalMemory                             Algorithm               src/Algorithm.hs:12:1-18                29435          1    0.0    0.0     0.0    0.0
+ main                                     Main                    app/Main.hs:(15,1)-(31,43)              29375          0   27.9   21.4    98.8  100.0
+  writeState                              Parser                  src/Parser.hs:(17,1)-(24,8)             29421     534855   22.0   27.9    44.2   55.3
+   show                                   Parser                  src/Parser.hs:41:3-78                   29438     535758   16.0   22.5    16.4   23.0
+    show                                  Process                 src/Process.hs:27:5-35                  29439     535758    0.4    0.6     0.4    0.6
+   fromSortedList                         Data.SortedList         Data/SortedList.hs:134:1-35             29422     534855    0.0    0.0     0.0    0.0
+   gaps                                   Algorithm               src/Algorithm.hs:(21,1)-(27,70)         29432     534855    3.2    2.9     5.8    4.3
+    fromSortedList                        Data.SortedList         Data/SortedList.hs:134:1-35             29433    1069710    0.0    0.0     0.0    0.0
+    gaps.\                                Algorithm               src/Algorithm.hs:24:11-79               29434     535581    2.5    1.4     2.5    1.4
+     m                                    Process                 src/Process.hs:23:41                    29436    1605645    0.0    0.0     0.0    0.0
+    address                               Process                 src/Process.hs:30:5-11                  29469        726    0.0    0.0     0.0    0.0
+    m                                     Process                 src/Process.hs:23:41                    29468        726    0.0    0.0     0.0    0.0
+    end                                   Process                 src/Process.hs:39:1-71                  29471          0    0.1    0.0     0.1    0.0
+     address                              Process                 src/Process.hs:30:5-11                  29473        726    0.0    0.0     0.0    0.0
+     m                                    Process                 src/Process.hs:23:41                    29472        726    0.0    0.0     0.0    0.0
+     process                              Process                 src/Process.hs:32:5-11                  29475        726    0.0    0.0     0.0    0.0
+     requiredMemory                       Process                 src/Process.hs:9:5-18                   29474        726    0.0    0.0     0.0    0.0
+   compare                                Parser                  src/Parser.hs:44:3-57                   29476       1585    0.0    0.0     0.0    0.0
+   processInMemoryToChunk                 Parser                  src/Parser.hs:35:1-71                   29477        726    0.0    0.0     0.0    0.0
+    address                               Process                 src/Process.hs:30:5-11                  29480        726    0.0    0.0     0.0    0.0
+    name                                  Process                 src/Process.hs:7:5-8                    29482        726    0.0    0.0     0.0    0.0
+    process                               Process                 src/Process.hs:32:5-11                  29481        726    0.0    0.0     0.0    0.0
+    size                                  Process                 src/Process.hs:36:1-47                  29483        726    0.0    0.0     0.0    0.0
+     requiredMemory                       Process                 src/Process.hs:9:5-18                   29484        726    0.0    0.0     0.0    0.0
+  main.(...)                              Main                    app/Main.hs:27:11-50                    29391          1    0.0    0.0     0.0    0.0
+  main.i                                  Main                    app/Main.hs:17:7-21                     29378          1    0.0    0.0     0.0    0.0
+  main.s                                  Main                    app/Main.hs:26:11-67                    29388          1    0.0    0.0    26.5   23.2
+   steps                                  Main                    app/Main.hs:37:1-35                     29389          1    0.0    0.0    26.5   23.2
+    iterateM                              Control.Monad.Extra     Control/Monad/Extra.hs:(221,1)-(223,31) 29390     534855    8.1    6.4    26.5   23.2
+     step                                 Algorithm               src/Algorithm.hs:(64,1)-(69,30)         29392     534855    2.8    3.4    18.5   16.9
+      incrementTime                       Algorithm               src/Algorithm.hs:72:1-41                29394     534855    0.7    1.0     0.7    1.0
+      insertFromQueue                     Algorithm               src/Algorithm.hs:(82,1)-(85,15)         29395     534855    1.0    0.3     1.0    0.3
+       fromSortedList                     Data.SortedList         Data/SortedList.hs:134:1-35             29398     534855    0.0    0.0     0.0    0.0
+       readCompact                        Main                    app/Main.hs:(51,1)-(58,5)               29442          0    0.0    0.0     0.0    0.0
+        insertFromQueueNoCompact          Algorithm               src/Algorithm.hs:(88,1)-(92,45)         29443        251    0.0    0.0     0.0    0.0
+         insertFirstFromQueue             Algorithm               src/Algorithm.hs:(108,1)-(117,17)       29444        251    0.0    0.0     0.0    0.0
+          foldr                           Data.SortedList         Data/SortedList.hs:300:3-42             29445        251    0.0    0.0     0.0    0.0
+          insertFirstFromQueue.x          Algorithm               src/Algorithm.hs:116:3-34               29456        248    0.0    0.0     0.0    0.0
+           fromSortedList                 Data.SortedList         Data/SortedList.hs:134:1-35             29457        248    0.0    0.0     0.0    0.0
+          insertFirstFromQueue.xs         Algorithm               src/Algorithm.hs:117:3-17               29458         49    0.0    0.0     0.0    0.0
+           drop                           Data.SortedList         Data/SortedList.hs:227:1-24             29459         49    0.0    0.0     0.0    0.0
+            splitAt                       Data.SortedList         Data/SortedList.hs:(233,1)-(235,36)     29460         49    0.0    0.0     0.0    0.0
+             splitAt.(...)                Data.SortedList         Data/SortedList.hs:234:7-33             29461         49    0.0    0.0     0.0    0.0
+             splitAt.zs                   Data.SortedList         Data/SortedList.hs:234:7-33             29462         49    0.0    0.0     0.0    0.0
+          insertProcess                   Algorithm               src/Algorithm.hs:(56,1)-(58,46)         29463         49    0.0    0.0     0.0    0.0
+           insert                         Data.SortedList         Data/SortedList.hs:210:1-31             29464         49    0.0    0.0     0.0    0.0
+            <>                            Data.SortedList         Data/SortedList.hs:148:3-70             29466         49    0.0    0.0     0.0    0.0
+             mergeSortedLists             Data.SortedList         Data/SortedList.hs:(139,1)-(144,40)     29467        144    0.0    0.0     0.0    0.0
+              compare                     Process                 src/Process.hs:45:3-71                  29496         95    0.0    0.0     0.0    0.0
+            singleton                     Data.SortedList         Data/SortedList.hs:160:1-28             29465         49    0.0    0.0     0.0    0.0
+          readFit                         Main                    app/Main.hs:(43,1)-(48,46)              29448          0    0.0    0.0     0.0    0.0
+           availableFits                  Algorithm               src/Algorithm.hs:(140,1)-(141,75)       29449          0    0.0    0.0     0.0    0.0
+            bestFit                       Algorithm               src/Algorithm.hs:(129,1)-(130,67)       29450        248    0.0    0.0     0.0    0.0
+             gaps                         Algorithm               src/Algorithm.hs:(21,1)-(27,70)         29451        248    0.0    0.0     0.0    0.0
+              gaps.\                      Algorithm               src/Algorithm.hs:24:11-79               29453       1005    0.0    0.0     0.0    0.0
+               m                          Process                 src/Process.hs:23:41                    29454       1491    0.0    0.0     0.0    0.0
+              address                     Process                 src/Process.hs:30:5-11                  29490        757    0.0    0.0     0.0    0.0
+              m                           Process                 src/Process.hs:23:41                    29489        757    0.0    0.0     0.0    0.0
+              fromSortedList              Data.SortedList         Data/SortedList.hs:134:1-35             29452        496    0.0    0.0     0.0    0.0
+              end                         Process                 src/Process.hs:39:1-71                  29491          0    0.0    0.0     0.0    0.0
+               address                    Process                 src/Process.hs:30:5-11                  29493        757    0.0    0.0     0.0    0.0
+               m                          Process                 src/Process.hs:23:41                    29492        757    0.0    0.0     0.0    0.0
+               process                    Process                 src/Process.hs:32:5-11                  29495        757    0.0    0.0     0.0    0.0
+               requiredMemory             Process                 src/Process.hs:9:5-18                   29494        757    0.0    0.0     0.0    0.0
+             requiredMemory               Process                 src/Process.hs:9:5-18                   29455        248    0.0    0.0     0.0    0.0
+      issue                               Algorithm               src/Algorithm.hs:(76,1)-(79,49)         29396     534855    3.8    4.0     9.2    7.3
+       issue.(...)                        Algorithm               src/Algorithm.hs:79:9-49                29409     534855    0.4    0.2     2.3    2.0
+        span                              Data.SortedList         Data/SortedList.hs:(378,1)-(380,36)     29410     534855    1.0    1.4     1.9    1.8
+         span.(...)                       Data.SortedList         Data/SortedList.hs:379:7-30             29412     534855    0.5    0.3     0.5    0.3
+          arrivalTime                     Process                 src/Process.hs:8:5-15                   29417        196    0.0    0.0     0.0    0.0
+         span.ys                          Data.SortedList         Data/SortedList.hs:379:7-30             29411     534855    0.4    0.0     0.4    0.0
+         span.zs                          Data.SortedList         Data/SortedList.hs:379:7-30             29441     534854    0.1    0.0     0.1    0.0
+       issue.a                            Algorithm               src/Algorithm.hs:79:9-49                29408     534855    0.3    0.0     0.3    0.0
+       processes                          Process                 src/Process.hs:14:5-13                  29429     534855    0.1    0.0     0.1    0.0
+       queue                              Process                 src/Process.hs:15:5-9                   29400     534855    0.1    0.0     0.1    0.0
+       union                              Data.SortedList         Data/SortedList.hs:413:1-58             29404     534855    0.6    0.4     2.7    1.3
+        foldr                             Data.SortedList         Data/SortedList.hs:300:3-42             29405     534855    0.5    0.7     0.5    0.7
+         ==                               Process                 src/Process.hs:11:13-14                 29498        390    0.0    0.0     0.0    0.0
+        mappend                           Data.SortedList         Data/SortedList.hs:151:3-16             29418     534855    0.4    0.0     0.9    0.0
+         <>                               Data.SortedList         Data/SortedList.hs:148:3-70             29419     534855    0.0    0.0     0.5    0.0
+          mergeSortedLists                Data.SortedList         Data/SortedList.hs:(139,1)-(144,40)     29420     535245    0.5    0.0     0.5    0.0
+           compare                        Process                 src/Process.hs:42:3-60                  29499        390    0.0    0.0     0.0    0.0
+        nub                               Data.SortedList         Data/SortedList.hs:(293,1)-(296,14)     29406     534855    0.5    0.2     0.7    0.2
+         nub.go                           Data.SortedList         Data/SortedList.hs:(295,5)-(296,14)     29407     534855    0.3    0.0     0.3    0.0
+       issue.b                            Algorithm               src/Algorithm.hs:79:9-49                29440     534854    0.0    0.0     0.0    0.0
+      removeFinishedProcesses             Algorithm               src/Algorithm.hs:(120,1)-(125,31)       29397     534855    1.6    2.5     4.7    4.8
+       queue                              Process                 src/Process.hs:15:5-9                   29399     534855    0.1    0.0     0.1    0.0
+       removeFinishedProcesses.(...)      Algorithm               src/Algorithm.hs:(124,3)-(125,31)       29424     534855    0.8    0.3     2.7    2.3
+        partition                         Data.SortedList         Data/SortedList.hs:(241,1)-(243,36)     29425     534855    0.7    1.4     1.7    2.0
+         partition.(...)                  Data.SortedList         Data/SortedList.hs:242:7-35             29427     534855    0.8    0.6     0.8    0.6
+          removeFinishedProcesses.(...).\ Algorithm               src/Algorithm.hs:124:35-84              29485        726    0.0    0.0     0.0    0.0
+           executionStart                 Process                 src/Process.hs:31:5-18                  29486        726    0.0    0.0     0.0    0.0
+           executionTime                  Process                 src/Process.hs:10:5-17                  29487        726    0.0    0.0     0.0    0.0
+           process                        Process                 src/Process.hs:32:5-11                  29488        726    0.0    0.0     0.0    0.0
+         partition.ys                     Data.SortedList         Data/SortedList.hs:242:7-35             29426     534855    0.2    0.0     0.2    0.0
+        processes                         Process                 src/Process.hs:14:5-13                  29428     534855    0.2    0.0     0.2    0.0
+       removeFinishedProcesses.fps        Algorithm               src/Algorithm.hs:(124,3)-(125,31)       29423     534855    0.2    0.0     0.2    0.0
+      step.\                              Algorithm               src/Algorithm.hs:64:45-61               29393     534855    0.0    0.0     0.0    0.0
+   toSortedList                           Data.SortedList         Data/SortedList.hs:129:1-37             29413          1    0.0    0.0     0.0    0.0
+    compare                               Process                 src/Process.hs:42:3-60                  29414         48    0.0    0.0     0.0    0.0
+  main.ss                                 Main                    app/Main.hs:27:11-50                    29387          1    0.0    0.0     0.0    0.0
+  readCompact                             Main                    app/Main.hs:(51,1)-(58,5)               29384          0    0.0    0.0     0.0    0.0
+  readFit                                 Main                    app/Main.hs:(43,1)-(48,46)              29380          0    0.0    0.0     0.0    0.0
+   readFit.\                              Main                    app/Main.hs:45:26-60                    29382          3    0.0    0.0     0.0    0.0
+  readPlaySimulation                      Main                    app/Main.hs:(61,1)-(64,31)              29386          0    0.0    0.0     0.0    0.0
+  readProcesses                           Parser                  src/Parser.hs:14:1-60                   29377          0    0.0    0.0     0.2    0.0
+   readProcess                            Parser                  src/Parser.hs:(9,1)-(11,36)             29415         49    0.2    0.0     0.2    0.0
