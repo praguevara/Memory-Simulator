@@ -22,7 +22,7 @@ cE :: Color
 cE = makeColorI 66 139 202 255
 
 displaySize :: (Int, Int)
-displaySize = (1600, 1000)
+displaySize = (1280, 720)
 
 simulation :: (Bool, Int, [SimState], [SimState]) -> IO ()
 simulation s@(_, speed, _, _) = play
