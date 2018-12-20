@@ -22,7 +22,7 @@ cE :: Color
 cE = makeColorI 66 139 202 255
 
 displaySize :: (Int, Int)
-displaySize = (1280, 720)
+displaySize = (1600, 1000)
 
 simulation :: (Bool, Int, [SimState], [SimState]) -> IO ()
 simulation s@(_, speed, _, _) = play
@@ -50,20 +50,20 @@ events _ a = a
 
 draw :: SimState -> Picture
 draw s@(t, ProcessorState _ q, _) =
-  drawChunks s
+  (Translate 0 (-200) . Scale 0.9 0.9 . drawChunks) s
     <> (Translate 500 (-350) . drawStep) t
-    <> ( (Color cB . Translate (-630) 320 . Scale 0.15 0.15)
+    <> (Translate (-630) 320 . drawQueue) q
+
+drawQueue :: S.SortedList Process -> Picture
+drawQueue q = if (null . S.fromSortedList) q then blank else (Color cB . Scale 0.15 0.15 )
        . mconcat
-       $ Scale 1.5 1.5 (Text "Queue:")
+       $ Scale 1.5 1.5 (Text (concat ["Queue (", (show . length . S.fromSortedList) q, " element(s)):"]))
        : (   (\(i, n) -> Translate 0 ((i + 1.5) * (-150)) . Text $ show n)
          <$> zip [0 ..] (S.fromSortedList q)
          )
-       )
-
 
 drawChunks :: SimState -> Picture
 drawChunks (_, ProcessorState st _, _) =
-  Translate 0 (-200) $ Scale 0.9 0.9 $
     (\(rs, ts) -> mconcat rs <> mconcat ts)
     $ unzip ((\c@(Chunk (MemoryAddress a, _) _) -> mapPair (Translate
     ( (0.5 * (widthChunk c - fromIntegral (fst displaySize)))
@@ -71,7 +71,6 @@ drawChunks (_, ProcessorState st _, _) =
     )
     0) $ drawChunk c) <$> chunks st)
     where mapPair = join (***)
-
 
 drawChunk :: Chunk -> (Picture, Picture)
 drawChunk c@(Chunk (MemoryAddress a, s) n) =

@@ -8,11 +8,11 @@ import qualified Data.SortedList               as S
 import           Graphics
 import           System.Exit
 import           Control.Monad.Writer
+import           System.Environment
 
 main :: IO ()
 main = do
-  --[i] <- getArgs
-  let i = "input.txt"
+  [i] <- getArgs
   ps <- readProcesses i
   if null ps
     then do
@@ -23,10 +23,10 @@ main = do
       c <- readCompact
       let (ss, logs) =
             (unzip . steps (0 :: Int, initialState, S.toSortedList ps) . c) f
-      g <- readPlaySimulation
+      (g, s) <- readPlaySimulation
       writeFile "output.txt"  (unlines (writeState <$> ss))
       writeFile "actions.txt" (unlines (show <$> filter (\(Log _ a) -> (not . null) a) logs))
-      when g $ simulation (True, 5, [], ss)
+      when g $ simulation (True, s, [], ss)
 
 
 steps :: SimState -> (SimState -> Writer [Action] SimState) -> [(SimState, Log)]
@@ -35,7 +35,6 @@ steps s c = takeWhileOneMore
     not $ null psm && null psq && null psi
   )
   (iterate (step c . fst) (s, Log 0 []))
-
 
 takeWhileOneMore :: (a -> Bool) -> [a] -> [a]
 takeWhileOneMore p = foldr (\x ys -> if p x then x : ys else [x]) []
@@ -58,8 +57,12 @@ readCompact = do
       else insertFromQueueNoCompact
     )
 
-readPlaySimulation :: IO Bool
+readPlaySimulation :: IO (Bool, Int)
 readPlaySimulation = do
   putStrLn "Do you want to play the simulation? [y/n]"
   (r : _) <- getLine
-  return (r == 'y' || r == 'Y')
+  if r == 'y' || r == 'Y' then do
+    putStrLn "Enter simulation steps per second:"
+    s <- getLine
+    return (True, read s)
+  else return (False, 0)

@@ -23,7 +23,7 @@ gaps gs =
           if b - m a == 0 then Nothing else Just (MemoryAddress (m a), b - m a)
         )
     <$> zip (MemoryAddress 0 : (end <$> S.fromSortedList gs))
-            (((m . address) <$> S.fromSortedList gs) ++ [totalMemory])
+            ((m . address <$> S.fromSortedList gs) ++ [totalMemory])
 
 type Fit = S.SortedList ProcessInMemory -> Process -> Maybe MemoryAddress
 
@@ -32,8 +32,8 @@ freeSpace ps = sum $ snd <$> gaps ps
 
 compact :: S.SortedList ProcessInMemory -> S.SortedList ProcessInMemory
 compact ls = S.toSortedList $ scanl'
-  (\a b@(ProcessInMemory _ t x) ->
-    ProcessInMemory (MemoryAddress $ m (end a) + size b) t x
+  (\a (ProcessInMemory _ t x) ->
+    ProcessInMemory (MemoryAddress (m (end a))) t x
   )
   (ProcessInMemory (MemoryAddress 0) t0 px)
   ps
@@ -43,7 +43,7 @@ shouldCompact :: S.SortedList ProcessInMemory -> Process -> Bool
 shouldCompact ps p =
   freeSpace ps
     >= requiredMemory p
-    && snd (head $ sortOn (\x -> (-1) * snd x) $ gaps ps)
+    && (snd . head . sortOn (\x -> (-1) * snd x) . gaps) ps
     <  requiredMemory p
 
 insertProcess
@@ -62,13 +62,12 @@ instance Show Log where
   show (Log t as) = concat ["Instant t = ", show t, ":\n"] ++ concat (showAction <$> as)
     where showAction a = "\t" ++ show a ++ "\n"
 
-step :: (SimState ->  Writer [Action] SimState) -> SimState -> (SimState, Log)
-step x s@(t, _, _) = (\(s', as) -> (s', Log t as)) <$> runWriter $
-  do
-    a <- issue s
-    b <- removeFinishedProcesses a
-    c <- insertFromQueue x b
-    return (incrementTime 1 c)
+step :: (SimState -> Writer [Action] SimState) -> SimState -> (SimState, Log)
+step x s@(t, _, _) = (\(s', as) -> (s', Log t as)) <$> runWriter $ do
+  a <- issue s
+  b <- removeFinishedProcesses a
+  c <- insertFromQueue x b
+  return (incrementTime 1 c)
 
 incrementTime :: Int -> SimState -> SimState
 incrementTime d (t, a, b) = (t + d, a, b)
@@ -80,11 +79,13 @@ issue (t, s, ps) = do
   return (t, ProcessorState (processes s) (S.union (queue s) a), b)
   where (a, b) = S.span ((t ==) . arrivalTime) ps
 
-insertFromQueue :: (SimState -> Writer [Action] SimState) -> SimState -> Writer [Action] SimState
-insertFromQueue x s@(_, ProcessorState _ psq, _) =
-  case S.fromSortedList psq of
-    [] -> return s
-    _  -> x s
+insertFromQueue
+  :: (SimState -> Writer [Action] SimState)
+  -> SimState
+  -> Writer [Action] SimState
+insertFromQueue x s@(_, ProcessorState _ psq, _) = case S.fromSortedList psq of
+  [] -> return s
+  _  -> x s
 
 insertFromQueueNoCompact :: Fit -> SimState -> Writer [Action] SimState
 insertFromQueueNoCompact fit s = do
@@ -99,18 +100,16 @@ insertFromQueueCompact :: Fit -> SimState -> Writer [Action] SimState
 insertFromQueueCompact fit s@(t, ProcessorState psm psq, tis) = do
   a <- insertFirstFromQueue fit s
   case a of
-    Nothing -> if shouldCompact psm (head $ S.fromSortedList psq)
-      then insertFromQueueCompact
-        fit
-        (t, ProcessorState (compact psm) psq, tis)
+    Nothing -> if (not . null . S.fromSortedList) psq && shouldCompact psm (head $ S.fromSortedList psq)
+      then insertFromQueueCompact fit (t, ProcessorState (compact psm) psq, tis)
       else return s
     Just x -> insertFromQueueCompact fit x
 
 insertFirstFromQueue :: Fit -> SimState -> Writer [Action] (Maybe SimState)
-insertFirstFromQueue fit (t, ProcessorState ps q, ts) = case length q of
-  0 -> return Nothing
-  _ -> case fit ps x of
-    Just i  -> do
+insertFirstFromQueue fit (t, ProcessorState ps q, ts) = if null q
+  then return Nothing
+  else case fit ps x of
+    Just i -> do
       a <- insertProcess ps i t x
       return $ Just (t, ProcessorState a xs, ts)
     Nothing -> return Nothing
@@ -123,8 +122,9 @@ removeFinishedProcesses (t, st, tis) = do
   tell $ ProcessRemoved <$> S.fromSortedList rms
   return (t, ProcessorState fps (queue st), tis)
  where
-  (fps, rms) = S.partition (\x -> (t - executionStart x) < executionTime (process x))
-                 (processes st)
+  (fps, rms) = S.partition
+    (\x -> (t - executionStart x) < executionTime (process x))
+    (processes st)
 
 -- Fits
 bestFit :: Fit
