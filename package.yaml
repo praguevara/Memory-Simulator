@@ -39,7 +39,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     - -Wall
-    #- -O2
+    - -O2
     dependencies:
     - gestormemoria
 
