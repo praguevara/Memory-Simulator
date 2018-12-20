@@ -40,7 +40,6 @@ executables:
     - -with-rtsopts=-N
     - -Wall
     - -O2
-    - -fprof-auto-top
     dependencies:
     - gestormemoria
 
