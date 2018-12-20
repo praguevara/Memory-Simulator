@@ -1,7 +1,6 @@
 import           Prelude                 hiding ( drop
                                                 , span
                                                 )
-import           System.Environment
 import           Algorithm
 import           Parser
 import           Process
@@ -9,13 +8,12 @@ import qualified Data.SortedList               as S
 import           Graphics
 import           System.Exit
 import           Control.Monad.Writer
-import           Control.Monad.Extra
 
 main :: IO ()
 main = do
   --[i] <- getArgs
   let i = "input.txt"
-  ps  <- readProcesses i
+  ps <- readProcesses i
   if null ps
     then do
       putStrLn "Call it with input file as argument"
@@ -23,21 +21,24 @@ main = do
     else do
       f <- readFit
       c <- readCompact
-      let (ss, written) =  steps (0 :: Int, initialState, S.toSortedList ps) f c
+      let (ss, logs) =
+            (unzip . steps (0 :: Int, initialState, S.toSortedList ps) . c) f
       g <- readPlaySimulation
-      writeFile "output.txt"  (unlines $ writeState <$> ss)
-      writeFile "output2.txt" (unlines $ show <$> written)
+      writeFile "output.txt"  (unlines (writeState <$> ss))
+      writeFile "actions.txt" (unlines (show <$> filter (\(Log _ a) -> (not . null) a) logs))
       when g $ simulation (True, 5, [], ss)
 
-steps :: SimState
-  -> Fit
-  -> (Fit -> SimState -> Writer [Action] SimState)
-  -> ([SimState], [Log])
-steps s f c = runWriter $ take 10 <$> iterateM (step f c) s
+
+steps :: SimState -> (SimState -> Writer [Action] SimState) -> [(SimState, Log)]
+steps s c = takeWhileOneMore
+  (\((_, ProcessorState psm psq, psi), _) ->
+    not $ null psm && null psq && null psi
+  )
+  (iterate (step c . fst) (s, Log 0 []))
 
 
 takeWhileOneMore :: (a -> Bool) -> [a] -> [a]
-takeWhileOneMore p = foldr (\x ys -> if p x then x:ys else [x]) []
+takeWhileOneMore p = foldr (\x ys -> if p x then x : ys else [x]) []
 
 readFit :: IO Fit
 readFit = do

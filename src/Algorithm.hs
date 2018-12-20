@@ -6,12 +6,11 @@ import           Data.List
 import qualified Data.SortedList               as S
 import           Data.Maybe
 import           Control.Monad.Writer
-import           Debug.Trace
 
 totalMemory :: Int
 totalMemory = 2000
 
-data Action = ProcessAddedToQueue Process
+data Action = ProcessIssued Process
             | ProcessInserted ProcessInMemory
             | ProcessRemoved ProcessInMemory
             | CompactedMemory (S.SortedList ProcessInMemory) (S.SortedList Process.ProcessInMemory)
@@ -57,15 +56,18 @@ insertProcess ps a t p = do
   tell [ProcessInserted (ProcessInMemory a t p)]
   return (S.insert (ProcessInMemory a t p) ps)
 
+data Log = Log Int [Action]
 
-type Log = (Int, Action)
+instance Show Log where
+  show (Log t as) = concat ["Instant t = ", show t, ":\n"] ++ concat (showAction <$> as)
+    where showAction a = "\t" ++ show a ++ "\n"
 
-step :: Fit -> (Fit -> SimState ->  Writer [Action] SimState) -> SimState -> Writer [Log] SimState
-step f x s@(t, _, _) = mapWriter (\(n,w) -> (n, zip [t..t] w)) $
+step :: (SimState ->  Writer [Action] SimState) -> SimState -> (SimState, Log)
+step x s@(t, _, _) = (\(s', as) -> (s', Log t as)) <$> runWriter $
   do
     a <- issue s
     b <- removeFinishedProcesses a
-    c <- insertFromQueue f x b
+    c <- insertFromQueue x b
     return (incrementTime 1 c)
 
 incrementTime :: Int -> SimState -> SimState
@@ -74,15 +76,15 @@ incrementTime d (t, a, b) = (t + d, a, b)
 -- reads processes to be issued and adds them to the queue
 issue :: SimState -> Writer [Action] SimState
 issue (t, s, ps) = do
-  tell (ProcessAddedToQueue <$> S.fromSortedList a)
+  tell (ProcessIssued <$> S.fromSortedList a)
   return (t, ProcessorState (processes s) (S.union (queue s) a), b)
   where (a, b) = S.span ((t ==) . arrivalTime) ps
 
-insertFromQueue :: Fit -> (Fit -> SimState -> Writer [Action] SimState) -> SimState -> Writer [Action] SimState
-insertFromQueue f x s@(_, ProcessorState _ psq, _) =
+insertFromQueue :: (SimState -> Writer [Action] SimState) -> SimState -> Writer [Action] SimState
+insertFromQueue x s@(_, ProcessorState _ psq, _) =
   case S.fromSortedList psq of
     [] -> return s
-    _  -> x f s
+    _  -> x s
 
 insertFromQueueNoCompact :: Fit -> SimState -> Writer [Action] SimState
 insertFromQueueNoCompact fit s = do
