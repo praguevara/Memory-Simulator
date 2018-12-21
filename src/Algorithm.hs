@@ -15,7 +15,7 @@ type ActionSim = (Action, SimState)
 data Action = ProcessIssued Process
             | ProcessInserted ProcessInMemory
             | ProcessRemoved ProcessInMemory
-            | CompactedMemory (S.SortedList ProcessInMemory) (S.SortedList Process.ProcessInMemory)
+            | CompactedMemory (S.SortedList ProcessInMemory) (S.SortedList ProcessInMemory)
             | IncrementedTime Int
   deriving (Show)
 
@@ -33,13 +33,16 @@ type Fit = S.SortedList ProcessInMemory -> Process -> Maybe MemoryAddress
 freeSpace :: S.SortedList ProcessInMemory -> Int
 freeSpace ps = sum $ snd <$> gaps ps
 
-compact :: S.SortedList ProcessInMemory -> S.SortedList ProcessInMemory
-compact ls = S.toSortedList $ scanl'
-  (\a (ProcessInMemory _ t x) ->
-    ProcessInMemory (MemoryAddress (m (end a))) t x
-  )
-  (ProcessInMemory (MemoryAddress 0) t0 px)
-  ps
+compact :: S.SortedList ProcessInMemory -> Writer [Action] (S.SortedList ProcessInMemory)
+compact ls = do
+    let n = S.toSortedList $ scanl'
+          (\a (ProcessInMemory _ t x) ->
+            ProcessInMemory (MemoryAddress (m (end a))) t x
+          )
+          (ProcessInMemory (MemoryAddress 0) t0 px)
+          ps
+    tell [(CompactedMemory ls n)]
+    return n
   where (ProcessInMemory _ t0 px : ps) = S.fromSortedList ls
 
 shouldCompact :: S.SortedList ProcessInMemory -> Process -> Bool
