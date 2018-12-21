@@ -10,10 +10,13 @@ import           Control.Monad.Writer
 totalMemory :: Int
 totalMemory = 2000
 
+type ActionSim = (Action, SimState)
+
 data Action = ProcessIssued Process
             | ProcessInserted ProcessInMemory
             | ProcessRemoved ProcessInMemory
             | CompactedMemory (S.SortedList ProcessInMemory) (S.SortedList Process.ProcessInMemory)
+            | IncrementedTime Int
   deriving (Show)
 
 gaps :: S.SortedList ProcessInMemory -> [(MemoryAddress, Int)]
@@ -54,23 +57,27 @@ insertProcess
   -> Writer [Action] (S.SortedList ProcessInMemory)
 insertProcess ps a t p = do
   tell [ProcessInserted (ProcessInMemory a t p)]
-  return (S.insert (ProcessInMemory a t p) ps)
+  return $ S.insert (ProcessInMemory a t p) ps
 
-data Log = Log Int [Action]
+data Log = Log Int [(Action, SimState)]
 
 instance Show Log where
   show (Log t as) = concat ["Instant t = ", show t, ":\n"] ++ concat (showAction <$> as)
     where showAction a = "\t" ++ show a ++ "\n"
 
 step :: (SimState -> Writer [Action] SimState) -> SimState -> (SimState, Log)
-step x s@(t, _, _) = (\(s', as) -> (s', Log t as)) <$> runWriter $ do
-  a <- issue s
-  b <- removeFinishedProcesses a
-  c <- insertFromQueue x b
-  return (incrementTime 1 c)
+step st s@(t, _, _) =
+  let (a, a') = runWriter $ issue s
+      (b, b') = runWriter $ removeFinishedProcesses a
+      (c, c') = runWriter $ insertFromQueue st b
+      (d, d') = runWriter $ incrementTime 1 c in
+      (d, Log t $ concat $ expand <$> [(a', a), (b', b), (c', c), (d', d)])
+    where expand (as, s') = (\a' -> (a', s')) <$> as
 
-incrementTime :: Int -> SimState -> SimState
-incrementTime d (t, a, b) = (t + d, a, b)
+incrementTime :: Int -> SimState -> Writer [Action] SimState
+incrementTime d (t, a, b) = do
+  tell [IncrementedTime t]
+  return (t + d, a, b)
 
 -- reads processes to be issued and adds them to the queue
 issue :: SimState -> Writer [Action] SimState

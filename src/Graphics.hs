@@ -42,10 +42,10 @@ events
   -> (Bool, Int, [SimState], [SimState])
 events (EventKey (SpecialKey KeySpace) Down _ _) (r, s, a, b) =
   (not r, s, a, b)
-events (EventKey (SpecialKey KeyLeft) Down _ _) (r, s, a : as, bs) =
-  (r, s, as, a : bs)
-events (EventKey (SpecialKey KeyRight) Down _ _) (r, s, as, b : bs) =
-  (r, s, b : as, bs)
+events (EventKey (SpecialKey KeyLeft) Down _ _) (_, s, a : as, bs) =
+  (False, s, as, a : bs)
+events (EventKey (SpecialKey KeyRight) Down _ _) (_, s, as, b : bs) =
+  (False, s, b : as, bs)
 events _ a = a
 
 draw :: SimState -> Picture
@@ -76,12 +76,12 @@ drawChunk :: Chunk -> (Picture, Picture)
 drawChunk c@(Chunk (MemoryAddress a, s) n) =
   ( mconcat
     [ Color (if n == "hueco" then cC else cD)
-      $ rectangleSolid (widthChunk c) (fromIntegral $ snd displaySize `div` 3)
+      . rectangleSolid (widthChunk c) $ fromIntegral (snd displaySize) / 3
     , Color cA $ rectangleWire (widthChunk c) (fromIntegral $ snd displaySize `div` 3)
     ]
-  , mconcat
-    [ (Translate (- widthChunk c / 2 + 10) 0 . Scale 0.2 0.2 . Color cB . Text) (if n == "hueco" then "-" else n)
-    , (Translate (- widthChunk c / 2 + 10) (-30) . Scale 0.1 0.1 . Color cB . Text)
+  , Color cB $ mconcat
+    [ (Scale 0.2 0.2 . Text) (if n == "hueco" then "-" else n)
+    ,( Translate 0 (-50) . Scale 0.1 0.1 .  Text)
       ("(" ++ show a ++ ", " ++ show s ++ ")")
     ]
   )

@@ -23,10 +23,11 @@ main = do
       c <- readCompact
       let (ss, logs) =
             (unzip . steps (0 :: Int, initialState, S.toSortedList ps) . c) f
-      (g, s) <- readPlaySimulation
+      -- (g, s) <- readPlaySimulation
+      let (g, s) = (True, 2)
       writeFile "output.txt"  (unlines (writeState <$> ss))
       writeFile "actions.txt" (unlines (show <$> filter (\(Log _ a) -> (not . null) a) logs))
-      when g $ simulation (True, s, [], ss)
+      when g $ simulation (True, s, [], snd <$> concat ((\(Log _ st) -> st) <$> logs))
 
 
 steps :: SimState -> (SimState -> Writer [Action] SimState) -> [(SimState, Log)]
@@ -57,6 +58,7 @@ readCompact = do
       else insertFromQueueNoCompact
     )
 
+{--
 readPlaySimulation :: IO (Bool, Int)
 readPlaySimulation = do
   putStrLn "Do you want to play the simulation? [y/n]"
@@ -66,3 +68,4 @@ readPlaySimulation = do
     s <- getLine
     return (True, read s)
   else return (False, 0)
+--}

@@ -9,6 +9,6 @@ if __name__ == "__main__":
     pass
   with open("input.txt", "w+") as f:
     for i in range(1,n):
-      f.write("p{0} {1} {2} {3}\n".format(i, i*3, randint(1, 1000), randint(5, 25)))
+      f.write("p{0} {1} {2} {3}\n".format(i, i*randint(1,6), randint(1, 1000), randint(1, 15)))
 
     
